@@ -50,6 +50,7 @@ conn = db.connect(db_file)
 cur = conn.cursor()
 cur.execute('CREATE TABLE IF NOT EXISTS water(id INTEGER PRIMARY KEY AUTOINCREMENT, name, sub_type, geometry, country, blob BLOB)')
 
+
 '''получаем список файлов с данными'''
 dat_files = os.listdir(dirname)
 '''перебираем файлы с данными'''
@@ -61,6 +62,7 @@ for dat_file in dat_files:
     cur2 = conn2.cursor()
     obj_count = 0    
     res = cur2.execute("SELECT name, sub_type, AsGeoJSON(Geometry) AS geometry, Geometry AS blob FROM ln_waterway WHERE Geometry NOT NULL")
+
     for row in res:
         obj_count += 1        
         name = filterString(row[0])        
@@ -83,8 +85,8 @@ for dat_file in dat_files:
         country = dat_file.split('-')[0]
         if len(name) == 0:
             continue
-               
         cur.execute("INSERT INTO water (name, sub_type, geometry, country, blob) VALUES(?,?,?,?,?)",(name,sub_type,geometry,country,blob))
+
     conn.commit()      
     cur2.close()
     conn2.close()
